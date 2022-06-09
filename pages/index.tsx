@@ -4,9 +4,12 @@ import Head from 'next/head';
 
 const Home: NextPage = () => {
   const ref = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLSpanElement>(null);
+
   const [height, setHeight] = useState<number>();
   const [response, setResponse] = useState<string>('');
   const [isSending, setIsSending] = useState<boolean>(false);
+  const [sent, setSent] = useState<boolean>(false);
 
   useEffect(() => {
     setInterval(() => {
@@ -21,6 +24,23 @@ const Home: NextPage = () => {
     }
   }, [ref]);
 
+  useEffect(() => {
+    if (sent && buttonRef) {
+      if (buttonRef.current?.innerHTML) {
+        buttonRef.current.innerHTML = '👌🏼';
+
+        setTimeout(() => {
+          if (buttonRef.current?.innerHTML) {
+            buttonRef.current.innerHTML = '&gt;';
+          }
+
+          setIsSending(false);
+          setResponse('');
+        }, 2000);
+      }
+    }
+  }, [sent, buttonRef]);
+
   const handleButton = async () => {
     setIsSending(true);
     const req = await fetch('/api/sendMail', {
@@ -30,8 +50,10 @@ const Home: NextPage = () => {
       }),
       body: JSON.stringify({ response })
     }).then((r) => r.json());
-    setIsSending(false);
-    console.log(req);
+
+    if (req.success) {
+      setSent(true);
+    }
   };
 
   return (
@@ -59,10 +81,10 @@ const Home: NextPage = () => {
             </h1>
             <span className='italic text-white'>Lucruri magice se vor întâmpla, stai cu gândul aproape. 💭</span>
 
-            <div className='mt-10 flex w-full flex-col items-start gap-y-2 rounded-md bg-gray-600 bg-opacity-50 p-4 sm:mt-16 lg:w-1/2'>
+            <div className='mt-16 flex w-full flex-col items-start gap-y-2 rounded-md bg-opacity-50 sm:mt-16 lg:w-1/2'>
               <p className='text-white'>(încă) nu știm să traducem, dar am vrea.</p>
               <p className='font-semibold uppercase tracking-widest text-gray-300'>
-                <span className='shake'>disruptive</span> education. what does it mean to you?
+                <span className='shake'>disruptive</span> education means = ?
               </p>
               <div className='relative w-full'>
                 <input
@@ -74,10 +96,10 @@ const Home: NextPage = () => {
                 <button
                   style={{ height: 46 }}
                   onClick={handleButton}
-                  disabled={isSending}
-                  className='absolute top-0 right-0 w-10 rounded-tr-md rounded-br-md border-b border-r border-t bg-green-700 p-2.5 uppercase text-white'
+                  disabled={isSending || !response}
+                  className='absolute top-0 right-0 w-10 rounded-tr-md rounded-br-md border-b border-r border-t bg-green-700 p-2.5 uppercase text-white disabled:bg-opacity-60'
                 >
-                  &gt;
+                  <span ref={buttonRef}>&gt;</span>
                 </button>
               </div>
             </div>

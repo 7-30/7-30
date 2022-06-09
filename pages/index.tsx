@@ -5,6 +5,8 @@ import Head from 'next/head';
 const Home: NextPage = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number>();
+  const [response, setResponse] = useState<string>('');
+  const [isSending, setIsSending] = useState<boolean>(false);
 
   useEffect(() => {
     setInterval(() => {
@@ -18,6 +20,19 @@ const Home: NextPage = () => {
       setHeight(ref.current?.offsetHeight);
     }
   }, [ref]);
+
+  const handleButton = async () => {
+    setIsSending(true);
+    const req = await fetch('/api/sendMail', {
+      method: 'POST',
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({ response })
+    }).then((r) => r.json());
+    setIsSending(false);
+    console.log(req);
+  };
 
   return (
     <>
@@ -43,6 +58,29 @@ const Home: NextPage = () => {
               Este despre a așeza mai multe piese care împreună mișcă un sistem.
             </h1>
             <span className='italic text-white'>Lucruri magice se vor întâmpla, stai cu gândul aproape. 💭</span>
+
+            <div className='mt-10 flex w-full flex-col items-start gap-y-2 rounded-md bg-gray-600 bg-opacity-50 p-4 sm:mt-16 lg:w-1/2'>
+              <p className='text-white'>(încă) nu știm să traducem, dar am vrea.</p>
+              <p className='font-semibold uppercase tracking-widest text-gray-300'>
+                <span className='shake'>disruptive</span> education. what does it mean to you?
+              </p>
+              <div className='relative w-full'>
+                <input
+                  value={response}
+                  onChange={({ target }) => setResponse(target.value)}
+                  className='w-full rounded-md border bg-transparent p-2 pr-10 text-lg text-white outline-none'
+                  placeholder='Apăi aia și aia...'
+                />
+                <button
+                  style={{ height: 46 }}
+                  onClick={handleButton}
+                  disabled={isSending}
+                  className='absolute top-0 right-0 w-10 rounded-tr-md rounded-br-md border-b border-r border-t bg-green-700 p-2.5 uppercase text-white'
+                >
+                  &gt;
+                </button>
+              </div>
+            </div>
           </div>
         </main>
       </div>

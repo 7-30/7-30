@@ -29,9 +29,9 @@ const Home: NextPage = () => {
           style={height ? { height: `calc(100% - ${height}px)` } : {}}
         >
           <div className='flex w-full flex-col gap-y-4 sm:w-2/3'>
-            <span className='font-semibold uppercase tracking-widest text-gray-300'>Asociația minu-magică 7:30 🧚🏼‍♀️</span>
+            <span className='font-semibold uppercase tracking-widest text-gray-300'>Organizația 7:30</span>
             <h1 className='leading-snug text-white'>
-              „Toată lumea vrea să fie fericită și nimeni nu vrea să sufere.” - Șapte:treizeci
+              Este despre a așeza mai multe piese care împreună mișcă un sistem.
             </h1>
             <span className='italic text-white'>Lucruri magice se vor întâmpla, stai cu gândul aproape. 💭</span>
           </div>
